@@ -1,0 +1,148 @@
+displayApp.controller('EventsController', ['$scope', 'eventService',function ($scope, EventFactory){    
+      // function fetchEvent(zip) {
+      // 	eventService.getEvent(zip).then(fuz)
+      // $scope.addEvent = function(){
+      //   EventFactory.addEvent($scope.new_event, function(data){
+      //   })
+      //    EventFactory.getEvents(function(res_fac){
+      //     $scope.events = res_fac;
+      //   })
+      // }	
+  // })
+
+//display factory-------------------------------------
+
+  // displayApp.factory('EventFactory', function($http){
+
+  //  //  factory.getEvent = function(callback){
+  //  //       $http.get('/events').success(function(resdata){
+  //  //       	events = resdata;
+	 //  //       callback(events);
+	 //  //      })
+	 //  // }
+	 //  // factory.addEvents = function(data, callback){
+	 //  //    $http.post('/events', {name: data}).success(function(somedata){
+	 //  //    })
+	 //  // }
+  //  //  return factory;
+  // })
+
+
+  .get('http://api.openweathermap.org/data/2.5/weather?zip=' + zip +',us&APPID=6e13e9b9daa63b59ced3922f564a7210')
+
+
+  var Event = angular.module('displayApp', []);
+
+Event.controller('eventCtrl', ['$scope', 'eventService', function($scope, eventService) {
+  function fetchEvent(zip) {
+    eventService.getEvent(zip).then(function(data){
+      $scope.place = data;
+    }); 
+  }
+  
+  // fetchEvent('84105');
+  
+  $scope.findEvent = function(zip) {
+    console.log('in findevent');
+    $scope.place = '';
+    fetchEvent(zip);
+  };
+}]);
+
+Event.factory('eventService', ['$http', '$q', function ($http, $q){
+  function getEvent (zip){
+    console.log('in getevent')
+    var deferred = $q.defer();
+    $.get('http://eventful.com/events?q=music' + zip +',us&APPID=6e13e9b9daa63b59ced3922f564a7210')
+      .success(function(data){
+        $('body').append(data.name + ' ' + data.weather[0].description)
+        // deferred.resolve(data.query.results.channel);
+      })
+      .error(function(err){
+        console.log('Error retrieving markets');
+        deferred.reject(err);
+      });
+    return deferred.promise;
+  }
+  
+  return {
+    getEvent: getEvent
+  };
+}]);
+
+FkQSWfP79zcJrHzT.
+
+
+
+
+<script src="script.js"></script>
+<script type="text/javascript">
+var Event = angular.module('displayApp', []);
+
+Event.controller('eventCtrl', ['$scope', 'eventService', function($scope, eventService) {
+  function fetchEvent(zip) {
+    eventService.getEvent(zip).then(function(data){
+      $scope.place = data;
+    }); 
+  }
+  
+  // fetchEvent('84105');
+  
+  $scope.findEvent = function(zip) {
+    console.log('in findevent');
+    $scope.place = '';
+    fetchEvent(zip);
+  };
+}]);
+
+Event.factory('eventService', ['$http', '$q', function ($http, $q){
+  function getEvent (zip){
+    console.log('in getevent')
+    var deferred = $q.defer();
+
+
+    $.ajax({
+      url: 'http://api.walmartlabs.com/v1/search?apiKey=kjahhe62e23mpby44qstskpt&query=skateboard&responseGroup=full&numItems: 100',
+      type: 'GET',
+      datatype: 'jsonp',
+      //Access-Control-Allow-Origin: 'http://localhost:8002',
+      success: function(response){
+        console.log(response);
+      }
+    })
+
+        // $('body').append(data.name + ' ' + data.weather[0].description)
+        // deferred.resolve(data.query.results.channel);
+     
+      // .error(function(err){
+      //   console.log('Error retrieving markets');
+      //   deferred.reject(err);
+      // });
+    return deferred.promise;
+  }
+  
+  return {
+    getEvent: getEvent
+  };
+}]);
+
+
+</script>
+
+</head>
+ <body>
+  <h3>Events Around You</h3>
+   <div ng-controller='eventCtrl'>
+    <div class="jumbotron">
+      Location: <input type='text' value='' ng-model='new_event'>
+      <input type='submit' value='submit' ng-click='findEvent(new_event)'>
+     <div> 
+
+        
+        <!-- <div ng-view="">
+        </div> -->
+    </div>
+ 
+  
+</body>
+</html>

@@ -1,0 +1,122 @@
+<html ng-app="displayApp" >
+<head>
+	<title>Events Around You</title>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
+ 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-route.min.js"></script>
+ 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+ 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+<script src="script.js"></script>
+<script type="text/javascript">
+var Event = angular.module('displayApp', []);
+
+Event.controller('eventCtrl', ['$scope', 'eventService', function($scope, eventService) {
+  function fetchEvent(zip) {
+    eventService.getEvent(zip).then(function(data){
+      $scope.place = data;
+    }); 
+  }
+  
+  // fetchEvent('84105');
+  
+  $scope.findEvent = function(zip) {
+  	console.log('in findevent');
+    $scope.place = '';
+    fetchEvent(zip);
+  };
+}]);
+
+Event.factory('eventService', ['$http', '$q', function ($http, $q){
+  function getEvent (zip){
+  	console.log('in getevent')
+    var deferred = $q.defer();
+    // $.ajax({
+    // url: 'http://data.colorado.gov/resource/4ykn-tg5h.json?entityStatus=Good%20Standing&principalZipCode= + zip, function (data)',
+    
+    // type: 'GET',
+    // crossDomain: true, // enable this
+    // dataType: 'jsonp',
+    // success: function() { alert("Success"); },
+    // error: function() { alert('Failed!'); },
+    // beforeSend: setHeader
+//});
+    $.get('http://data.colorado.gov/resource/4ykn-tg5h.json?entityStatus=Good%20Standing&principalZipCode= + zip, function (data) ')
+      .success(function(data){
+    //     console.log(data)
+        // Changes XML to JSON
+      // function xmlToJson(xml) {
+        
+      //   // Create the return object
+      //   var obj = {};
+
+      //   if (xml.nodeType == 1) { // element
+      //     // do attributes
+      //     if (xml.attributes.length > 0) {
+      //     obj["@attributes"] = {};
+      //       for (var j = 0; j < xml.attributes.length; j++) {
+      //         var attribute = xml.attributes.item(j);
+      //         obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+      //       }
+      //     }
+      //   } else if (xml.nodeType == 3) { // text
+      //     obj = xml.nodeValue;
+      //   }
+
+      //   // do children
+      //   if (xml.hasChildNodes()) {
+      //     for(var i = 0; i < xml.childNodes.length; i++) {
+      //       var item = xml.childNodes.item(i);
+      //       var nodeName = item.nodeName;
+      //       if (typeof(obj[nodeName]) == "undefined") {
+      //         obj[nodeName] = xmlToJson(item);
+      //       } else {
+      //         if (typeof(obj[nodeName].push) == "undefined") {
+      //           var old = obj[nodeName];
+      //           obj[nodeName] = [];
+      //           obj[nodeName].push(old);
+      //         }
+      //         obj[nodeName].push(xmlToJson(item));
+      //       }
+      //     }
+      //   }
+      //   return obj;
+      // };
+
+      //   var new_data = xmlToJson(data);
+      //   console.log(new_data);
+      	//$('body').append(data.name + ' ' + data.weather[0].description)
+        deferred.resolve(data.query.results.channel);
+      })
+      .error(function(err){
+        console.log('Error retrieving markets');
+        deferred.reject(err);
+      });
+    return deferred.promise;
+  }
+  
+  return {
+    getEvent: getEvent
+  };
+}]);
+
+
+</script>
+
+</head>
+ <body>
+ 	<h3>Events Around You</h3>
+   <div ng-controller='eventCtrl'>
+   	<div class="jumbotron">
+      Location: <input type='text' value='' ng-model='new_event'>
+      <input type='submit' value='submit' ng-click='findEvent(new_event)'>
+     <div> 
+
+        
+        <!-- <div ng-view="">
+        </div> -->
+    </div>
+ 
+  
+</body>
+</html>
+
